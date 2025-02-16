@@ -12,7 +12,7 @@
         <h1 class="text-center">Create a New Pet</h1>
 
         <div class="card shadow p-4">
-            <form method="post" action="{{ route('pets.store') }}" enctype="multipart/form-data">
+            <form id="petForm" method="post" action="{{ route('pets.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label class="form-label">Type</label>
@@ -58,7 +58,9 @@
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Save Pet</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                        Save Pet
+                    </button>
                 </div>
             </form>
         </div>
@@ -67,7 +69,30 @@
             <a href="{{ route('pets.index') }}" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
+    {{-- modal --}}
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to add this pet?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmSubmit">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('confirmSubmit').addEventListener('click', function() {
+            document.getElementById('petForm').submit();
+        });
+    </script>
 </body>
 </html>

@@ -17,7 +17,7 @@
                 @method('PUT')
 
                 <div class="mb-3">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">Pet Type</label>
                     <input type="text" name="type" class="form-control" value="{{ $pet->type }}" required>
                 </div>
 

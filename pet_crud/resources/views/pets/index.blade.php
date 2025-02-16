@@ -6,12 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pet List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body>
     <div class="container mt-4">
         <h1 class="text-center">Pet List</h1>
 
-        <!-- Filter Form -->
+        <!-- Filter -->
         <form method="GET" action="{{ route('pets.index') }}" class="mb-4 p-3 bg-light rounded shadow-sm">
             <div class="row">
                 <div class="col-md-3">
@@ -31,7 +32,7 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    <button type="submit" class="btn btn-primary w-20" ><i class="bi bi-funnel"></i></button>
                 </div>
             </div>
         </form>
@@ -45,7 +46,7 @@
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
-                        <th>Type</th>
+                        <th>Pet Type</th>
                         <th>Breed</th>
                         <th>Gender</th>
                         <th>Color</th>
@@ -68,7 +69,7 @@
                         <td>{{ $pet->weight }} kg</td>
                         <td>
                             @if($pet->image)
-                                <img src="{{ asset('storage/' . $pet->image) }}" width="50" height="50" class="rounded img-thumbnail"
+                                <img src="{{ asset('storage/' . $pet->image) }}" width="100" height="100" class="rounded img-thumbnail"
                                     data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImage('{{ asset('storage/' . $pet->image) }}')">
                             @else
                                 No Image
@@ -76,11 +77,9 @@
                         </td>
                         <td>
                             <a href="{{ route('pets.edit', $pet->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('pets.destroy', $pet->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this pet?')">Delete</button>
-                            </form>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction({{ $pet->id }})">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                     @endforeach
@@ -88,6 +87,8 @@
             </table>
         </div>
     </div>
+
+    <!-- image -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -102,11 +103,39 @@
         </div>
     </div>
 
+    <!-- delete -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this pet?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function showImage(imageUrl) {
-    document.getElementById('modalImage').src = imageUrl;
-    }
+            document.getElementById('modalImage').src = imageUrl;
+        }
+
+        function setDeleteAction(petId) {
+            let form = document.getElementById('deleteForm');
+            form.action = "/pets/" + petId;
+        }
     </script>
 </body>
 </html>

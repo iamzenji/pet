@@ -7,10 +7,26 @@ use App\Models\Pet;
 
 class PetController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pets = Pet::all();
-        return view('pets.index', ['pets' => $pets]);
+        $query = Pet::query();
+
+        // Filter data
+        if ($request->filled('type')) {
+            $query->where('type', 'like', '%' . $request->type . '%');
+        }
+
+        if ($request->filled('breed')) {
+            $query->where('breed', 'like', '%' . $request->breed . '%');
+        }
+
+        if ($request->filled('gender')) {
+            $query->where('gender', $request->gender);
+        }
+
+        $pets = $query->get();
+        // fetch data
+        return view('pets.index', compact('pets'));
     }
 
     public function create()
