@@ -18,5 +18,14 @@ Route::get('/', function () {
 });
 
 Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
+
+// Create function
 Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
 Route::post('/pets', [PetController::class, 'store'])->name('pets.store');
+
+// Edit and Update route
+Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
+Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
+
+// Delete function
+Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
