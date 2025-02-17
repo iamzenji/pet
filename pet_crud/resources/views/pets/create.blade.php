@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Create Pet</title>
+    <link rel="stylesheet" href="https://code.jquery.com/jquery-3.7.1.js">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
 </head>
 <body>
     <div class="container mt-4">
@@ -64,6 +67,10 @@
                 </div>
             </form>
         </div>
+
+
+
+
 
         <div class="mt-3 text-center">
             <a href="{{ route('pets.index') }}" class="btn btn-secondary">Back to List</a>

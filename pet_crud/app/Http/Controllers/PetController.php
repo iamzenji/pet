@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pet;
+use Yajra\DataTables\Facades\DataTables;
 
 class PetController extends Controller
 {
@@ -11,7 +12,16 @@ class PetController extends Controller
     {
         $query = Pet::query();
 
+        $pets = $query->get();
+        // fetch data
+        return view('pets.index');
+    }
+    public function getPet(Request $request)
+    {
+        $query = Pet::query();
+
         // Filter data
+
         if ($request->filled('type')) {
             $query->where('type', 'like', '%' . $request->type . '%');
         }
@@ -23,11 +33,10 @@ class PetController extends Controller
         if ($request->filled('gender')) {
             $query->where('gender', $request->gender);
         }
-
-        $pets = $query->get();
-        // fetch data
-        return view('pets.index', compact('pets'));
+        // return $pets = ;
+        return DataTables::make($query->get())->toJson();
     }
+
 
     public function create()
     {
@@ -69,14 +78,14 @@ class PetController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
+            'type'   => 'required|string|max:255',
+            'breed'  => 'required|string|max:255',
             'gender' => 'required|string',
-            'color' => 'required|string',
-            'size' => 'required|string',
-            'age' => 'required|integer',
+            'color'  => 'required|string',
+            'size'   => 'required|string',
+            'age'    => 'required|integer',
             'weight' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $pet = Pet::findOrFail($id);

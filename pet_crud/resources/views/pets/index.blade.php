@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pet List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" /> --}}
+    <link type ="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></link>
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/DataTables/datatables.min.css')}}">
+
 </head>
 <body>
     <div class="container mt-4">
@@ -43,8 +46,8 @@
 
         <!-- Pets Table -->
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
+            <table id="petTable"  class="table table-striped">
+                <thead>
                     <tr>
                         <th>Pet Type</th>
                         <th>Breed</th>
@@ -58,31 +61,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($pets as $pet)
-                    <tr>
-                        <td>{{ $pet->type }}</td>
-                        <td>{{ $pet->breed }}</td>
-                        <td>{{ $pet->gender }}</td>
-                        <td>{{ $pet->color }}</td>
-                        <td>{{ $pet->size }}</td>
-                        <td>{{ $pet->age }}</td>
-                        <td>{{ $pet->weight }} kg</td>
-                        <td>
-                            @if($pet->image)
-                                <img src="{{ asset('storage/' . $pet->image) }}" width="100" height="100" class="rounded img-thumbnail"
-                                    data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImage('{{ asset('storage/' . $pet->image) }}')">
-                            @else
-                                No Image
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('pets.edit', $pet->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction({{ $pet->id }})">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                    @endforeach
+                    {{-- @foreach($pets as $pet)
+                        <tr>
+                            <td>{{ $pet->type }}</td>
+                            <td>{{ $pet->breed }}</td>
+                            <td>{{ $pet->gender }}</td>
+                            <td>{{ $pet->color }}</td>
+                            <td>{{ $pet->size }}</td>
+                            <td>{{ $pet->age }}</td>
+                            <td>{{ $pet->weight }} kg</td>
+                            <td>
+                                @if($pet->image)
+                                    <img src="{{ asset('storage/' . $pet->image) }}" width="100" height="100" class="rounded img-thumbnail"
+                                        data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImage('{{ asset('storage/' . $pet->image) }}')">
+                                @else
+                                    No Image
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('pets.edit', $pet->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction({{ $pet->id }})">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach --}}
                 </tbody>
             </table>
         </div>
@@ -126,8 +129,190 @@
         </div>
     </div>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script> --}}
+    <script src="{{asset('assets/DataTables/datatables.min.js')}}"></script>
     <script>
+        // $(document).ready(function() {
+        //     $('#petTable').DataTable({
+        //                 dom: 'Bfrtip',
+        //                 buttons: [
+        //                     'copy', 'csv', 'excel', 'pdf', 'print'
+        //                 ]
+        //                 });
+        // })
+
+        $.ajax({
+            url: "/pet-list",
+            success: function(result){
+                $("#div1").html(result);
+                var html = '';
+                $.each(result, function(key,value) {
+
+                    console.log( value.type );
+                    html += '<tr>';
+                    html += '<td>'+value.type+'</td>';
+                    html += '<td>'+value.breed +'</td></tr>';
+                });
+                $('#sample').html(html);
+            }
+        });
+
+    // function petFunction(){
+    //     const DOM = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+    //     const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
+    //     var table = $('#petTable').DataTable({
+    //         processing: true,
+    //         serverSide: true,
+    //         ajax: {
+    //             url: "/pet-list",
+    //             type: 'GET',
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             },
+    //         },
+    //         columns: [
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //             {data: 'type'},
+    //         ],
+    //         dom: DOM,
+    //         aLengthMenu: A_LENGTH_MENU,
+    //         responsive: true,
+    //         colReorder: true,
+    //         autoWidth: false,
+    //         bSort: true,
+    //         paging: true,
+    //         info: true,
+    //         ordering: true,
+    //         searching: true,
+    //         // buttons: tableButtons,
+    //     });
+    //     return petFunction();
+    // }
+
+    // $(function() {
+    //     $(".task-listing").click(function() {
+    //         const DOM = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+    //             const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
+    //             var table = $('#petTable').DataTable({
+    //                 processing: true,
+    //                 serverSide: true,
+    //                 ajax: {
+    //                     url: "/pet-list",
+    //                     type: 'GET',
+    //                     headers: {
+    //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //                     },
+    //                 },
+    //                 columns: [
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                     {data: 'type'},
+    //                 ],
+    //                 dom: DOM,
+    //                 aLengthMenu: A_LENGTH_MENU,
+    //                 responsive: true,
+    //                 colReorder: true,
+    //                 autoWidth: false,
+    //                 bSort: true,
+    //                 paging: true,
+    //                 info: true,
+    //                 ordering: true,
+    //                 searching: true,
+    //                 // buttons: tableButtons,
+    //             });
+    //         });
+    //     });
+
+
+            // var domSetup = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+            //     const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
+            //     $('#petTable').DataTable({
+            //         processing: true,
+            //         serverSide: true,
+            //         ajax: {
+            //             url: "/pet-list",
+            //             type: 'GET',
+            //             headers: {
+            //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //             },
+            //         },
+            //         columns: [
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //             {data: 'type'},
+            //         ],
+            //         dom: domSetup,
+            //         aLengthMenu: A_LENGTH_MENU,
+            //         responsive: true,
+            //         colReorder: true,
+            //         autoWidth: false,
+            //         bSort: true,
+            //         paging: true,
+            //         info: true,
+            //         ordering: true,
+            //         searching: true,
+            //         // buttons: tableButtons,
+            //     });
+
+        $(document).ready(function(){
+            var domSetup = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+            const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
+            return    $('#petTable').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            url: "/pet-list",
+                            type: 'GET',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                        },
+                        columns: [
+                            {data: 'type'},
+                            {data: 'breed'},
+                            {data: 'gender'},
+                            {data: 'color'},
+                            {data: 'size'},
+                            {data: 'age'},
+                            {data: 'weight'},
+                            {data: 'image'},
+                        ],
+                        dom: domSetup,
+                        aLengthMenu: A_LENGTH_MENU,
+                        responsive: true,
+                        colReorder: true,
+                        autoWidth: false,
+                        bSort: true,
+                        paging: true,
+                        info: true,
+                        ordering: true,
+                        searching: true,
+                        // buttons: tableButtons,
+                    });
+        });
+
+
         function showImage(imageUrl) {
             document.getElementById('modalImage').src = imageUrl;
         }
@@ -136,6 +321,8 @@
             let form = document.getElementById('deleteForm');
             form.action = "/pets/" + petId;
         }
+
+
     </script>
 </body>
 </html>

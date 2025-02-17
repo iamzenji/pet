@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
+Route::get('/pet-list', [PetController::class, 'getPet'])->name('pets.getPet');
 
 // Create function
 Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
