@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pets', function (Blueprint $table) {
-            //column in  table
+            //column table
             $table->id();
             $table->string('type');
             $table->string('breed');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('weight', 5, 2);
             $table->string('image')->nullable();
             $table->timestamps();
-            });
+        });
     }
 
     /**
