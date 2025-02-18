@@ -102,14 +102,17 @@ class PetController extends Controller
     // Delete
     public function destroy($id)
     {
-        $pet = Pet::findOrFail($id);
+        $pet = Pet::find($id);
 
-        if ($pet->image) {
-            unlink(storage_path('app/public/' . $pet->image));
+        if (!$pet) {
+            return response()->json(['success' => false, 'message' => 'Pet not found'], 404);
         }
 
-        $pet->delete();
-
-        return redirect(route('pets.index'))->with('success', 'Pet deleted successfully!');
+        try {
+            $pet->delete();
+            return response()->json(['success' => true, 'message' => 'Pet deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete pet!'], 500);
+        }
     }
 }

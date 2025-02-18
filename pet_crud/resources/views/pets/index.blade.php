@@ -9,6 +9,8 @@
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" /> --}}
     <link type ="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></link>
     <link rel="stylesheet" type="text/css" href="{{asset('assets/DataTables/datatables.min.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
 <body>
@@ -57,35 +59,10 @@
                         <th>Age</th>
                         <th>Weight</th>
                         <th>Image</th>
-                        <th>Actions</th>
+                        <th style="width: 150px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach($pets as $pet)
-                        <tr>
-                            <td>{{ $pet->type }}</td>
-                            <td>{{ $pet->breed }}</td>
-                            <td>{{ $pet->gender }}</td>
-                            <td>{{ $pet->color }}</td>
-                            <td>{{ $pet->size }}</td>
-                            <td>{{ $pet->age }}</td>
-                            <td>{{ $pet->weight }} kg</td>
-                            <td>
-                                @if($pet->image)
-                                    <img src="{{ asset('storage/' . $pet->image) }}" width="100" height="100" class="rounded img-thumbnail"
-                                        data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImage('{{ asset('storage/' . $pet->image) }}')">
-                                @else
-                                    No Image
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('pets.edit', $pet->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction({{ $pet->id }})">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach --}}
                 </tbody>
             </table>
         </div>
@@ -106,42 +83,14 @@
         </div>
     </div>
 
-    <!-- delete -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this pet?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteForm" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Yes</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     {{-- <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script> --}}
     <script src="{{asset('assets/DataTables/datatables.min.js')}}"></script>
+    <script   script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        // $(document).ready(function() {
-        //     $('#petTable').DataTable({
-        //                 dom: 'Bfrtip',
-        //                 buttons: [
-        //                     'copy', 'csv', 'excel', 'pdf', 'print'
-        //                 ]
-        //                 });
-        // })
 
         $.ajax({
             url: "/pet-list",
@@ -158,123 +107,6 @@
                 $('#sample').html(html);
             }
         });
-
-    // function petFunction(){
-    //     const DOM = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
-    //     const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
-    //     var table = $('#petTable').DataTable({
-    //         processing: true,
-    //         serverSide: true,
-    //         ajax: {
-    //             url: "/pet-list",
-    //             type: 'GET',
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //             },
-    //         },
-    //         columns: [
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //             {data: 'type'},
-    //         ],
-    //         dom: DOM,
-    //         aLengthMenu: A_LENGTH_MENU,
-    //         responsive: true,
-    //         colReorder: true,
-    //         autoWidth: false,
-    //         bSort: true,
-    //         paging: true,
-    //         info: true,
-    //         ordering: true,
-    //         searching: true,
-    //         // buttons: tableButtons,
-    //     });
-    //     return petFunction();
-    // }
-
-    // $(function() {
-    //     $(".task-listing").click(function() {
-    //         const DOM = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
-    //             const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
-    //             var table = $('#petTable').DataTable({
-    //                 processing: true,
-    //                 serverSide: true,
-    //                 ajax: {
-    //                     url: "/pet-list",
-    //                     type: 'GET',
-    //                     headers: {
-    //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //                     },
-    //                 },
-    //                 columns: [
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                     {data: 'type'},
-    //                 ],
-    //                 dom: DOM,
-    //                 aLengthMenu: A_LENGTH_MENU,
-    //                 responsive: true,
-    //                 colReorder: true,
-    //                 autoWidth: false,
-    //                 bSort: true,
-    //                 paging: true,
-    //                 info: true,
-    //                 ordering: true,
-    //                 searching: true,
-    //                 // buttons: tableButtons,
-    //             });
-    //         });
-    //     });
-
-
-            // var domSetup = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
-            //     const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
-            //     $('#petTable').DataTable({
-            //         processing: true,
-            //         serverSide: true,
-            //         ajax: {
-            //             url: "/pet-list",
-            //             type: 'GET',
-            //             headers: {
-            //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //             },
-            //         },
-            //         columns: [
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //             {data: 'type'},
-            //         ],
-            //         dom: domSetup,
-            //         aLengthMenu: A_LENGTH_MENU,
-            //         responsive: true,
-            //         colReorder: true,
-            //         autoWidth: false,
-            //         bSort: true,
-            //         paging: true,
-            //         info: true,
-            //         ordering: true,
-            //         searching: true,
-            //         // buttons: tableButtons,
-            //     });
-
         $(document).ready(function(){
             var domSetup = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
             const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
@@ -296,7 +128,56 @@
                             {data: 'size'},
                             {data: 'age'},
                             {data: 'weight'},
-                            {data: 'image'},
+                            {
+                                data: 'image',
+                                orderable: false,
+                                searchable: false,
+                                render: function(data, type, row) {
+                                    if (data) {
+                                        return `<img src="/storage/${data}" width="50" height="50" class="img-thumbnail"
+                                                data-bs-toggle="modal" data-bs-target="#imageModal"
+                                                onclick="showImage('/storage/${data}')">`;
+                                    } else {
+                                        return "No Image";
+                                    }
+                                }
+                            },
+                            {
+                            data: null,
+                            orderable: false,
+                            searchable: false,
+                            render: function(data, type, row) {
+                            return `
+                                <div class="d-flex justify-content-between">
+                                    <a href="/pets/${row.id}/edit" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#deleteModal${row.id}">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal${row.id}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this pet?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger confirm-delete" data-id="${row.id}">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
                         ],
                         dom: domSetup,
                         aLengthMenu: A_LENGTH_MENU,
@@ -310,17 +191,67 @@
                         searching: true,
                         // buttons: tableButtons,
                     });
-        });
+                });
+                function showImage(imageUrl) {
+                    document.getElementById('modalImage').src = imageUrl;
+                }
+
+                function setDeleteAction(petId) {
+                    let form = document.getElementById('deleteForm');
+                    form.action = "/pets/" + petId;
+                }
+
+                //delete without reload
+                $(document).on("click", ".confirm-delete", function () {
+                    let petId = $(this).data("id");
+                    $.ajax({
+                        url: "/pets/" + petId,
+                        type: "DELETE",
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr("content"),
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                // Remove date
+                                $("#petTable").DataTable().row($(`button[data-id="${petId}"]`).parents("tr")).remove().draw();
+
+                                $("#deleteModal" + petId).modal("hide");
+
+                                // SweetAlert
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Pet Deleted!",
+                                    text: "The pet has been successfully deleted.",
+                                    confirmButtonColor: "#3085d6",
+                                    confirmButtonText: "OK",
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Deletion Failed!",
+                                    text: "Failed to delete the pet. Please try again.",
+                                    confirmButtonColor: "#d33",
+                                    confirmButtonText: "OK",
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error!",
+                                text: "Something went wrong while deleting the pet.",
+                                confirmButtonColor: "#d33",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+            });
 
 
-        function showImage(imageUrl) {
-            document.getElementById('modalImage').src = imageUrl;
-        }
 
-        function setDeleteAction(petId) {
-            let form = document.getElementById('deleteForm');
-            form.action = "/pets/" + petId;
-        }
+
+
 
 
     </script>
