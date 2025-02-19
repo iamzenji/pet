@@ -20,21 +20,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
-Route::get('/pet-list', [PetController::class, 'getPet'])->name('pets.getPet');
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
+    Route::get('/pet-list', [PetController::class, 'getPet'])->name('pets.getPet');
 
-// Create function
-Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
-Route::post('/pets', [PetController::class, 'store'])->name('pets.store');
+    // Create function
+    Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
+    Route::post('/pets', [PetController::class, 'store'])->name('pets.store');
 
-// Edit and Update route
-Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
-Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
+    // Edit and Update route
+    Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
+    Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
 
-// Delete function
-Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
+    // Delete function
+    Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
+});
 
-
-
-Auth::routes();
+Auth::routes(['verify' => true]);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
