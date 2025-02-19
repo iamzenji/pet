@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PetController; //import controller
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,3 +33,8 @@ Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
 
 // Delete function
 Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
+
+
+
+Auth::routes();
+Route::get('/home', [HomeController::class, 'index'])->name('home');

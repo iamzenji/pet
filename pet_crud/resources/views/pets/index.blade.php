@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +15,9 @@
 
 </head>
 <body>
+    @extends('layouts.app')
+
+    @section('content')
     <div class="container mt-4">
         <h1 class="text-center">Pet List</h1>
 
@@ -247,13 +251,8 @@
                         },
                     });
             });
-
-
-
-
-
-
-
     </script>
+    @endsection
 </body>
 </html>
+
