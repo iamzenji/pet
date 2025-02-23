@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
     Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
 
+
     // Delete function
     Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
 });

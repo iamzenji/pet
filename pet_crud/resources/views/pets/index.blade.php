@@ -153,12 +153,84 @@
                             render: function(data, type, row) {
                             return `
                                 <div class="d-flex justify-content-between">
-                                    <a href="/pets/${row.id}/edit" class="btn btn-warning btn-sm">
+                                    <button class="btn btn-warning btn-sm edit-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#editModal">
                                         <i class="bi bi-pencil"></i> Edit
-                                    </a>
+                                    </button>
                                     <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#deleteModal${row.id}">
                                         <i class="bi bi-trash"></i> Delete
                                     </button>
+                                </div>
+
+                                <!-- Edit Modal -->
+                                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editModalLabel">Edit Pet</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="editPetForm">
+                                                    <input type="hidden" id="editPetId" name="id">
+
+                                                    <div class="mb-3">
+                                                        <label for="editType" class="form-label">Type</label>
+                                                        <input type="text" class="form-control" id="editType" name="type">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editBreed" class="form-label">Breed</label>
+                                                        <input type="text" class="form-control" id="editBreed" name="breed">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editGender" class="form-label">Gender</label>
+                                                        <select class="form-control" id="editGender" name="gender">
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editColor" class="form-label">Color</label>
+                                                        <input type="text" class="form-control" id="editColor" name="color">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editSize" class="form-label">Size</label>
+                                                        <input type="text" class="form-control" id="editSize" name="size">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editAge" class="form-label">Age</label>
+                                                        <input type="number" class="form-control" id="editAge" name="age">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editWeight" class="form-label">Weight</label>
+                                                        <input type="text" class="form-control" id="editWeight" name="weight">
+                                                    </div>
+
+                                                    <!-- Move Image Upload Field to the Bottom -->
+                                                    <div class="mb-3 text-center">
+                                                        <label class="form-label">Current Image</label>
+                                                        <br>
+                                                        <img id="editPetImage" src="/images/default.png" alt="Pet Image" class="img-thumbnail" width="150">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editImage" class="form-label">Upload New Image</label>
+                                                        <input type="file" class="form-control" id="editImage" name="image">
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Update Pet</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Delete Modal -->
@@ -199,12 +271,10 @@
                 function showImage(imageUrl) {
                     document.getElementById('modalImage').src = imageUrl;
                 }
-
                 function setDeleteAction(petId) {
                     let form = document.getElementById('deleteForm');
                     form.action = "/pets/" + petId;
                 }
-
                 //delete without reload
                 $(document).on("click", ".confirm-delete", function () {
                     let petId = $(this).data("id");
@@ -216,11 +286,9 @@
                         },
                         success: function (response) {
                             if (response.success) {
-                                // Remove date
                                 $("#petTable").DataTable().row($(`button[data-id="${petId}"]`).parents("tr")).remove().draw();
 
                                 $("#deleteModal" + petId).modal("hide");
-
                                 // SweetAlert
                                 Swal.fire({
                                     icon: "success",
@@ -251,8 +319,77 @@
                         },
                     });
             });
+
+            // edit ajax
+            $(document).ready(function () {
+            $(document).on("click", ".edit-btn", function () {
+                let petId = $(this).data("id");
+
+                $.ajax({
+                    url: `/pets/${petId}/edit`,
+                    type: "GET",
+                    success: function (data) {
+
+                        $("#editPetId").val(data.id);
+                        $("#editType").val(data.type);
+                        $("#editBreed").val(data.breed);
+                        $("#editGender").val(data.gender);
+                        $("#editColor").val(data.color);
+                        $("#editSize").val(data.size);
+                        $("#editAge").val(data.age);
+                        $("#editWeight").val(data.weight);
+                        let imageUrl = data.image ? `/storage/${data.image}` : "/images/default.png";
+                        $("#editPetImage").attr("src", imageUrl);
+
+                        $("#editModal").modal("show");
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Failed to fetch pet data.", "error");
+                    }
+                });
+            });
+                $(document).on("submit", "#editPetForm", function (e) {
+                e.preventDefault();
+
+                let petId = $("#editPetId").val();
+                let formData = new FormData(this);
+                formData.append("_method", "PUT");
+
+                $.ajax({
+                    url: `/pets/${petId}`,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Updated!",
+                                text: "Pet details have been updated successfully.",
+                            });
+
+                            $("#editModal").modal("hide")
+                            $("#petTable").DataTable().ajax.reload();
+                        } else {
+                            Swal.fire("Error!", "Failed to update pet details.", "error");
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire("Error!", "Something went wrong.", "error");
+                    },
+                });
+            });
+
+        });
     </script>
     @endsection
 </body>
 </html>
+
+
 

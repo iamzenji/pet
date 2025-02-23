@@ -68,36 +68,44 @@ class PetController extends Controller
     }
 
 
-    // Edit
     public function edit($id)
     {
-        $pet = Pet::findOrFail($id);
-        return view('pets.edit', compact('pet'));
+        $pet = Pet::find($id);
+
+        if (!$pet) {
+            return response()->json(['error' => 'Pet not found'], 404);
+        }
+
+        return response()->json($pet);
     }
 
     public function update(Request $request, $id)
     {
-        $data = $request->validate([
-            'type'   => 'required|string|max:255',
-            'breed'  => 'required|string|max:255',
-            'gender' => 'required|string',
-            'color'  => 'required|string',
-            'size'   => 'required|string',
-            'age'    => 'required|integer',
-            'weight' => 'required|numeric',
-            'image'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        $pet = Pet::findOrFail($id); // Find the pet
+
+        $validatedData = $request->validate([
+            'type' => 'required|string|max:255',
+            'breed' => 'required|string|max:255',
+            'gender' => 'required|string|max:10',
+            'color' => 'nullable|string|max:255',
+            'size' => 'nullable|string|max:255',
+            'age' => 'nullable|integer',
+            'weight' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
         ]);
 
-        $pet = Pet::findOrFail($id);
-
+        // Handle image upload
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('pets', 'public');
+            $imagePath = $request->file('image')->store('pets', 'public');
+            $validatedData['image'] = $imagePath;
         }
 
-        $pet->update($data);
+        $pet->update($validatedData); // Update pet record
 
-        return redirect(route('pets.index'))->with('success', 'Pet updated successfully!');
+        return response()->json(['success' => true, 'message' => 'Pet updated successfully!']);
     }
+
+
 
     // Delete
     public function destroy($id)
