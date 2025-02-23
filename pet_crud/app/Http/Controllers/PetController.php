@@ -46,26 +46,40 @@ class PetController extends Controller
     // Input
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'type' => 'required|string',
-            'breed' => 'required|string',
-            'gender' => 'required|string',
-            'color' => 'required|string',
-            'size' => 'required|string',
-            'age' => 'required|integer',
+        $request->validate([
+            'type' => 'required',
+            'breed' => 'required',
+            'gender' => 'required',
+            'color' => 'required',
+            'size' => 'required',
+            'age' => 'required|numeric',
             'weight' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'image' => 'nullable|image|max:2048',
         ]);
 
+        $pet = new Pet();
+        $pet->type = $request->type;
+        $pet->breed = $request->breed;
+        $pet->gender = $request->gender;
+        $pet->color = $request->color;
+        $pet->size = $request->size;
+        $pet->age = $request->age;
+        $pet->weight = $request->weight;
+
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('pets', 'public');
+            $imagePath = $request->file('image')->store('pets', 'public');
+            $pet->image = $imagePath;
         }
 
-        // insert data
-        Pet::create($data);
+        $pet->save();
 
-        return redirect(route('pets.index'))->with('success', 'Pet added successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Pet added successfully!',
+            'data' => $pet
+        ]);
     }
+
 
 
     public function edit($id)

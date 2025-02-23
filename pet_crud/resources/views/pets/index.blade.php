@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,7 @@
         <h1 class="text-center">Pet List</h1>
 
         <!-- Filter -->
-        <form method="GET" action="{{ route('pets.index') }}" class="mb-4 p-3 bg-light rounded shadow-sm">
+        {{-- <form method="GET" action="{{ route('pets.index') }}" class="mb-4 p-3 bg-light rounded shadow-sm">
             <div class="row">
                 <div class="col-md-3">
                     <label class="form-label">Type:</label>
@@ -44,11 +43,11 @@
                     <button type="submit" class="btn btn-primary w-20" ><i class="bi bi-funnel"></i></button>
                 </div>
             </div>
-        </form>
+        </form> --}}
 
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <a href="{{ route('pets.create') }}" class="btn btn-success">Add New Pet</a>
-        </div>
+        </div> --}}
 
         <!-- Pets Table -->
         <div class="table-responsive">
@@ -87,30 +86,92 @@
         </div>
     </div>
 
+    <div class="modal fade" id="addPetModal" tabindex="-1" aria-labelledby="addPetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create a New Pet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="petForm">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Type</label>
+                                    <input type="text" name="type" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Breed</label>
+                                    <input type="text" name="breed" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" class="form-select" required>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Color</label>
+                                    <input type="text" name="color" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Size</label>
+                                    <input type="text" name="size" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Age</label>
+                                    <input type="number" name="age" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Weight</label>
+                                    <input type="number" step="0.01" name="weight" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Image</label>
+                                    <input type="file" name="image" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-3">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                                Save Pet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to add this pet?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmSubmit">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     {{-- <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script> --}}
     <script src="{{asset('assets/DataTables/datatables.min.js')}}"></script>
     <script   script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
-
-        $.ajax({
-            url: "/pet-list",
-            success: function(result){
-                $("#div1").html(result);
-                var html = '';
-                $.each(result, function(key,value) {
-
-                    console.log( value.type );
-                    html += '<tr>';
-                    html += '<td>'+value.type+'</td>';
-                    html += '<td>'+value.breed +'</td></tr>';
-                });
-                $('#sample').html(html);
-            }
-        });
         $(document).ready(function(){
             var domSetup = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
             const A_LENGTH_MENU = [[10, 25, 50, 100, -1], ['10 rows', '25 rows', '50 rows', '100 rows', 'Show all']];
@@ -172,57 +233,52 @@
                                             <div class="modal-body">
                                                 <form id="editPetForm">
                                                     <input type="hidden" id="editPetId" name="id">
-
-                                                    <div class="mb-3">
-                                                        <label for="editType" class="form-label">Type</label>
-                                                        <input type="text" class="form-control" id="editType" name="type">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="editType" class="form-label">Type</label>
+                                                                <input type="text" class="form-control" id="editType" name="type">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editBreed" class="form-label">Breed</label>
+                                                                <input type="text" class="form-control" id="editBreed" name="breed">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editGender" class="form-label">Gender</label>
+                                                                <select class="form-select" id="editGender" name="gender">
+                                                                    <option value="Male">Male</option>
+                                                                    <option value="Female">Female</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editColor" class="form-label">Color</label>
+                                                                <input type="text" class="form-control" id="editColor" name="color">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="editSize" class="form-label">Size</label>
+                                                                <input type="text" class="form-control" id="editSize" name="size">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editAge" class="form-label">Age</label>
+                                                                <input type="number" class="form-control" id="editAge" name="age">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editWeight" class="form-label">Weight</label>
+                                                                <input type="text" class="form-control" id="editWeight" name="weight">
+                                                            </div>
+                                                        </div>
                                                     </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="editBreed" class="form-label">Breed</label>
-                                                        <input type="text" class="form-control" id="editBreed" name="breed">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="editGender" class="form-label">Gender</label>
-                                                        <select class="form-control" id="editGender" name="gender">
-                                                            <option value="Male">Male</option>
-                                                            <option value="Female">Female</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="editColor" class="form-label">Color</label>
-                                                        <input type="text" class="form-control" id="editColor" name="color">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="editSize" class="form-label">Size</label>
-                                                        <input type="text" class="form-control" id="editSize" name="size">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="editAge" class="form-label">Age</label>
-                                                        <input type="number" class="form-control" id="editAge" name="age">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="editWeight" class="form-label">Weight</label>
-                                                        <input type="text" class="form-control" id="editWeight" name="weight">
-                                                    </div>
-
-                                                    <!-- Move Image Upload Field to the Bottom -->
                                                     <div class="mb-3 text-center">
                                                         <label class="form-label">Current Image</label>
                                                         <br>
                                                         <img id="editPetImage" src="/images/default.png" alt="Pet Image" class="img-thumbnail" width="150">
                                                     </div>
-
                                                     <div class="mb-3">
                                                         <label for="editImage" class="form-label">Upload New Image</label>
                                                         <input type="file" class="form-control" id="editImage" name="image">
                                                     </div>
-
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-primary">Update Pet</button>
@@ -265,7 +321,41 @@
                         info: true,
                         ordering: true,
                         searching: true,
-                        // buttons: tableButtons,
+                        buttons: [
+                            {
+                                text: '<i class="bi bi-plus-lg"></i> Add',
+                                className: 'btn btn-secondary',
+                                action: function (e, dt, node, config) {
+                                    $('#addPetModal').modal('show');
+                                }
+                            },
+                            {
+                                extend: 'copy',
+                                text: '<i class="bi bi-clipboard"></i> Copy',
+                                className: 'btn btn-secondary'
+                            },
+                            {
+                                extend: 'excel',
+                                text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                                className: 'btn btn-secondary'
+                            },
+                            {
+                                extend: 'csv',
+                                text: '<i class="bi bi-file-earmark-text"></i> CSV',
+                                className: 'btn btn-secondary'
+                            },
+                            {
+                                extend: 'pdf',
+                                text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+                                className: 'btn btn-secondary'
+                            },
+                            {
+                                extend: 'print',
+                                text: '<i class="bi bi-printer"></i> Print',
+                                className: 'btn btn-secondary'
+                            }
+                        ]
+
                     });
                 });
                 function showImage(imageUrl) {
@@ -386,6 +476,72 @@
             });
 
         });
+
+        // Add data ajax
+        $(document).ready(function() {
+        let table = $('#petsTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('pets.index') }}",
+            columns: [
+                { data: 'id' },
+                { data: 'type' },
+                { data: 'breed' },
+                { data: 'gender' },
+                { data: 'color' },
+                { data: 'size' },
+                { data: 'age' },
+                { data: 'weight' },
+                { data: 'image', render: function(data) {
+                    return `<img src="/storage/${data}" width="50">`;
+                }},
+                { data: 'created_at' }
+            ]
+        });
+
+        $('#confirmSubmit').click(function() {
+            let formData = new FormData($('#petForm')[0]);
+
+            $.ajax({
+                url: "{{ route('pets.store') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        $('#addPetModal').modal('hide');
+                        $('#confirmationModal').modal('hide');
+                        $('#petForm')[0].reset();
+
+                        table.row.add(response.data).draw(false);
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Pet added successfully!',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: 'Something went wrong. Please try again!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });
     </script>
     @endsection
 </body>
