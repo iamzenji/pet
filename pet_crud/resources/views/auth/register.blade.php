@@ -39,6 +39,24 @@
                             </div>
                         </div>
 
+                        <!-- Role Selection Dropdown -->
+                        <div class="row mb-3">
+                            <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Account Type') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
+                                    <option value="User" {{ old('role') == 'User' ? 'selected' : '' }}>User</option>
+                                    <option value="Reader" {{ old('role') == 'Reader' ? 'selected' : '' }}>Reader</option>
+                                </select>
+
+                                @error('role')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="row mb-3">
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 

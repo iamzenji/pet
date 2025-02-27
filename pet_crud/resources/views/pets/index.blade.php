@@ -270,9 +270,13 @@
                                     <i class="bi bi-pencil"></i> Edit
                                 </button>
 
-                                <button class="btn btn-danger btn-sm delete-btn" onclick="del(${row.id})" data-id="${row.id}" >
+                                <button class="btn btn-danger btn-sm delete-btn"
+                                    data-id="${row.id}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">
                                     <i class="bi bi-trash"></i> Delete
                                 </button>
+
                             </div>
                         `;
                     }
@@ -400,8 +404,6 @@
         });
     });
 
-    
-
     // fetch data
     $(document).on("click", ".edit-btn", function () {
         $("#editPetId").val(this.getAttribute('data-id'));
@@ -423,33 +425,27 @@
         $("#editModal").modal("show");
     });
 
-    function del(petId) {
+    $(document).on('click', '.delete-btn', function () {
+        let petId = $(this).data('id');
+        $('.confirm-delete').data('id', petId);
+    });
+
+    $(document).on('click', '.confirm-delete', function () {
+        let petId = $(this).data('id');
+
         $.ajax({
-            url: "/pets/" + petId,
-            type: "DELETE",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr("content"),
+            url: `/pets/${petId}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
-                if (response.success) {
-                    $("#petTable").DataTable().row($(`button[data-id="${petId}"]`).parents("tr")).remove().draw();
-
-                    $("#deleteModal").modal("hide");
-                    // SweetAlert
-                    Swal.fire({
-                        icon: "success",
-                        title: "Pet Deleted!",
-                        text: "The pet has been successfully deleted.",
-                        confirmButtonColor: "#3085d6",
-                        confirmButtonText: "OK",
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-            },
+                $('#deleteModal').modal('hide');
+                Swal.fire("Deleted!", "Pet has been deleted.", "success");
+                $('#petTable').DataTable().ajax.reload();
+            }
         });
-    }
-
+    });
 
     return table;
     });
