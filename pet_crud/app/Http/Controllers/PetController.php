@@ -79,23 +79,20 @@ class PetController extends Controller
             'data' => $pet
         ]);
     }
+    // public function edit($id)
+    // {
+    //     $pet = Pet::find($id);
 
+    //     if (!$pet) {
+    //         return response()->json(['error' => 'Pet not found'], 404);
+    //     }
 
-
-    public function edit($id)
-    {
-        $pet = Pet::find($id);
-
-        if (!$pet) {
-            return response()->json(['error' => 'Pet not found'], 404);
-        }
-
-        return response()->json($pet);
-    }
+    //     return response()->json($pet);
+    // }
 
     public function update(Request $request, $id)
     {
-        $pet = Pet::findOrFail($id); // Find the pet
+        $pet = Pet::findOrFail($id);
 
         $validatedData = $request->validate([
             'type' => 'required|string|max:255',

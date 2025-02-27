@@ -29,7 +29,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::post('/pets', [PetController::class, 'store'])->name('pets.store');
 
     // Edit and Update route
-    Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
+    // Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
     Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
 
 
