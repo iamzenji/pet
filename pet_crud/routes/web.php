@@ -3,6 +3,8 @@
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PetController; //import controller
+use App\Http\Controllers\ReaderController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -22,6 +24,7 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
+    
     Route::get('/pet-list', [PetController::class, 'getPet'])->name('pets.getPet');
 
     // Create function
@@ -31,10 +34,17 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // Edit and Update route
     // Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
     Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
-
+    
 
     // Delete function
     Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
+
+    // User Dashboard
+    Route::get('/user-dashboard', [UserController::class, 'index'])->name('user.dashboard');
+
+    // Reader Dashboard
+    Route::get('/reader-dashboard', [ReaderController::class, 'index'])->name('reader.dashboard');
+
 });
 
 Auth::routes(['verify' => true]);

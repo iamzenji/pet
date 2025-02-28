@@ -41,24 +41,6 @@
             </table>
         </div>
     </div>
-
-<!-- Image Preview Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Image Preview</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <img id="modalImage" src="" class="img-fluid rounded" alt="Preview">
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
     <div class="modal " id="addPetModal" tabindex="-1" aria-labelledby="addPetModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -172,7 +154,6 @@
                             <div class="mb-3 text-center">
                                 <label class="form-label">Current Image</label>
                                 <br>
-                                <img id="editPetImage" src="/images/default.png" alt="Pet Image" class="img-thumbnail" width="150">
                             </div>
                             <div class="mb-3">
                                 <label for="editImage" class="form-label">Upload New Image</label>
@@ -202,6 +183,20 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-danger confirm-delete" data-id="${row.id}">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Pet Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="modalImage" src="" class="img-fluid" alt="Selected Image">
                     </div>
                 </div>
             </div>
@@ -238,7 +233,6 @@
                     orderable: false,
                     searchable: false,
                     render: function (data, type, row) {
-                        console.log("Image Path:", data);
                         if (data) {
                             return `<img src="/storage/${data}" width="50" height="50" class="img-thumbnail"
                                             data-bs-toggle="modal" data-bs-target="#imageModal"
@@ -329,9 +323,8 @@
 
         });
 
-    function showImage(imageUrl) {
-        document.getElementById('modalImage').src = imageUrl;
-    }
+
+
     function setDeleteAction(petId) {
         let form = document.getElementById('deleteForm');
         form.action = "/pets/" + petId;
@@ -446,6 +439,7 @@
             }
         });
     });
+    
 
     return table;
     });

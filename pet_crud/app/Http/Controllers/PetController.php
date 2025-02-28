@@ -16,6 +16,8 @@ class PetController extends Controller
         // fetch data
         return view('pets.index');
     }
+
+
     public function getPet(Request $request)
     {
         $query = Pet::query();
@@ -79,16 +81,6 @@ class PetController extends Controller
             'data' => $pet
         ]);
     }
-    // public function edit($id)
-    // {
-    //     $pet = Pet::find($id);
-
-    //     if (!$pet) {
-    //         return response()->json(['error' => 'Pet not found'], 404);
-    //     }
-
-    //     return response()->json($pet);
-    // }
 
     public function update(Request $request, $id)
     {
@@ -115,8 +107,6 @@ class PetController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Pet updated successfully!']);
     }
-
-
 
     // Delete
     public function destroy($id)

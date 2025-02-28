@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // Insert default roles
         DB::table('roles')->insert([
             ['name' => 'Administrator', 'display_name' => 'Admin', 'description' => 'Has full access to manage users, settings, and permissions.'],
             ['name' => 'User', 'display_name' => 'User', 'description' => 'A standard user with limited access to features.'],
