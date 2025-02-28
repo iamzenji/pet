@@ -10,4 +10,7 @@ class UserController extends Controller
     {
         return view('pets.index');
     }
+
+    // todo create manage user function here
+    // ? to manage change user role , details and reset password
 }

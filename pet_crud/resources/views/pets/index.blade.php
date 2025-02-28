@@ -1,3 +1,4 @@
+{{-- todo: remove doctype to head when using extends layout.app --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pet List</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" /> --}}
     <link type ="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></link>
     <link rel="stylesheet" type="text/css" href="{{asset('assets/DataTables/datatables.min.css')}}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
@@ -15,7 +15,7 @@
 </head>
 <body>
     @extends('layouts.app')
-
+    {{-- todo use section('css') --}}
     @section('content')
     <div class="container mt-4">
         <h1 class="text-center">Pet List</h1>
@@ -53,14 +53,17 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
+                                {{--todo: drop down select type from database --}}
                                 <div class="mb-3">
                                     <label class="form-label">Type</label>
                                     <input type="text" name="type" class="form-control" required>
                                 </div>
+                                {{--todo: drop down select breed from database --}}
                                 <div class="mb-3">
                                     <label class="form-label">Breed</label>
                                     <input type="text" name="breed" class="form-control" required>
                                 </div>
+                                {{--todo: change radio button --}}
                                 <div class="mb-3">
                                     <label class="form-label">Gender</label>
                                     <select name="gender" class="form-select" required>
@@ -116,14 +119,17 @@
                             <input type="hidden" id="editPetId" name="id">
                             <div class="row">
                                 <div class="col-md-6">
+                                    {{--todo: drop down select type from database --}}
                                     <div class="mb-3">
                                         <label for="editType" class="form-label">Type</label>
                                         <input type="text" class="form-control" id="editType" name="type">
                                     </div>
+                                    {{--todo: drop down select breed from database --}}
                                     <div class="mb-3">
                                         <label for="editBreed" class="form-label">Breed</label>
                                         <input type="text" class="form-control" id="editBreed" name="breed">
                                     </div>
+                                    {{--todo: change radio button --}}
                                     <div class="mb-3">
                                         <label for="editGender" class="form-label">Gender</label>
                                         <select class="form-select" id="editGender" name="gender">
@@ -203,9 +209,9 @@
         </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {{-- <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script> --}}
     <script src="{{asset('assets/DataTables/datatables.min.js')}}"></script>
     <script   script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- todo use external js or script and  use section('js or script') --}}
     <script>
     $(document).ready(function () {
         var domSetup = "<'row'<'col-sm-12 col-md-8'B><'col-sm-12 col-md-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
@@ -250,17 +256,17 @@
                         return `
                             <div class="d-flex justify-content-between">
                                 <button class="btn btn-warning btn-sm edit-btn"
-                                    data-id="${row.id}"
-                                    data-type="${row.type}"
-                                    data-breed="${row.breed}"
-                                    data-gender="${row.gender}"
-                                    data-color="${row.color}"
-                                    data-size="${row.size}"
-                                    data-age="${row.age}"
-                                    data-weight="${row.weight}"
-                                    data-image="${row.image}"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editModal">
+                                    data-id        = "${row.id}"
+                                    data-type      = "${row.type}"
+                                    data-breed     = "${row.breed}"
+                                    data-gender    = "${row.gender}"
+                                    data-color     = "${row.color}"
+                                    data-size      = "${row.size}"
+                                    data-age       = "${row.age}"
+                                    data-weight    = "${row.weight}"
+                                    data-image     = "${row.image}"
+                                    data-bs-toggle = "modal"
+                                    data-bs-target = "#editModal">
                                     <i class="bi bi-pencil"></i> Edit
                                 </button>
 
@@ -323,122 +329,123 @@
 
         });
 
-    function setDeleteAction(petId) {
-        let form = document.getElementById('deleteForm');
-        form.action = "/pets/" + petId;
-    }
-    //delete without reload
+        function setDeleteAction(petId) {
+            let form = document.getElementById('deleteForm');
+            form.action = "/pets/" + petId;
+        }
+        //delete without reload
 
-    $(document).on("submit", "#editPetForm", function (e) {
-        e.preventDefault();
+        $(document).on("submit", "#editPetForm", function (e) {
+            e.preventDefault();
 
-        let petId = $("#editPetId").val();
-        let formData = new FormData(this);
-        formData.append("_method", "PUT");
+            let petId = $("#editPetId").val();
+            let formData = new FormData(this);
+            formData.append("_method", "PUT");
 
-        $.ajax({
-            url: `/pets/${petId}`,
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function (response) {
-                if (response.success) {
+            $.ajax({
+                url: `/pets/${petId}`,
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title:"Updated!",
+                            text: "Pet details have been updated successfully.",
+                        });
+
+                        $("#editModal").modal("hide")
+                        $("#petTable").DataTable().ajax.reload();
+                    } else {
+                        Swal.fire("Error!", "Failed to update pet details.", "error");
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    Swal.fire("Error!", "Something went wrong.", "error");
+                },
+            });
+        });
+
+        $('#confirmSubmit').click(function () {
+            let formData = new FormData($('#petForm')[0]);
+            $('#addPetModal').modal('hide');
+            $.ajax({
+                url: "{{ route('pets.store') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+
+                    $('#confirmationModal').modal('hide');
+                    $('#petForm')[0].reset();
+
+                    table.row.add(response.data).draw(false);
                     Swal.fire({
-                        icon: "success",
-                        title: "Updated!",
-                        text: "Pet details have been updated successfully.",
+                        title: 'Success!',
+                        text: 'Pet added successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
                     });
 
-                    $("#editModal").modal("hide")
-                    $("#petTable").DataTable().ajax.reload();
-                } else {
-                    Swal.fire("Error!", "Failed to update pet details.", "error");
+                },
+                error: function (xhr) {
+                    //  apply error message  try catch status
+                    console.error(xhr.responseText);
                 }
-            },
-            error: function (xhr) {
-                console.error(xhr.responseText);
-                Swal.fire("Error!", "Something went wrong.", "error");
-            },
+            });
         });
-    });
 
-    $('#confirmSubmit').click(function () {
-        let formData = new FormData($('#petForm')[0]);
-        $('#addPetModal').modal('hide');
-        $.ajax({
-            url: "{{ route('pets.store') }}",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
+        // fetch data
+        $(document).on("click", ".edit-btn", function () {
+            $("#editPetId").val(this.getAttribute('data-id'));
+            $("#editType").val(this.getAttribute('data-type'));
+            $("#editBreed").val(this.getAttribute('data-breed'));
+            $("#editGender").val(this.getAttribute('data-gender'));
+            $("#editColor").val(this.getAttribute('data-color'));
+            $("#editSize").val(this.getAttribute('data-size'));
+            $("#editAge").val(this.getAttribute('data-age'));
+            $("#editWeight").val(this.getAttribute('data-weight'));
 
-                $('#confirmationModal').modal('hide');
-                $('#petForm')[0].reset();
-
-                table.row.add(response.data).draw(false);
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Pet added successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-
-            },
-            error: function (xhr) {
-                console.error(xhr.responseText);
+            let image = this.getAttribute('data-image');
+            if (image) {
+                $("#editPetImage").attr("src", "/storage/" + image);
+            } else {
+                $("#editPetImage").attr("src", "/default-placeholder.jpg");
             }
+            $("#editModal").modal("show");
         });
-    });
 
-    // fetch data
-    $(document).on("click", ".edit-btn", function () {
-        $("#editPetId").val(this.getAttribute('data-id'));
-        $("#editType").val(this.getAttribute('data-type'));
-        $("#editBreed").val(this.getAttribute('data-breed'));
-        $("#editGender").val(this.getAttribute('data-gender'));
-        $("#editColor").val(this.getAttribute('data-color'));
-        $("#editSize").val(this.getAttribute('data-size'));
-        $("#editAge").val(this.getAttribute('data-age'));
-        $("#editWeight").val(this.getAttribute('data-weight'));
-
-        let image = this.getAttribute('data-image');
-        if (image) {
-            $("#editPetImage").attr("src", "/storage/" + image);
-        } else {
-            $("#editPetImage").attr("src", "/default-placeholder.jpg");
-        }
-        $("#editModal").modal("show");
-    });
-
-    $(document).on('click', '.delete-btn', function () {
-        let petId = $(this).data('id');
-        $('.confirm-delete').data('id', petId);
-    });
-
-    $(document).on('click', '.confirm-delete', function () {
-        let petId = $(this).data('id');
-
-        $.ajax({
-            url: `/pets/${petId}`,
-            type: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                $('#deleteModal').modal('hide');
-                Swal.fire("Deleted!", "Pet has been deleted.", "success");
-                $('#petTable').DataTable().ajax.reload();
-            }
+        $(document).on('click', '.delete-btn', function () {
+            let petId = $(this).data('id');
+            $('.confirm-delete').data('id', petId);
         });
-    });
-    
 
-    return table;
+        $(document).on('click', '.confirm-delete', function () {
+            let petId = $(this).data('id');
+
+            $.ajax({
+                url: `/pets/${petId}`,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    $('#deleteModal').modal('hide');
+                    Swal.fire("Deleted!", "Pet has been deleted.", "success");
+                    $('#petTable').DataTable().ajax.reload();
+                }
+                // apply error message  try catch status
+            });
+        });
+
+        return table;
     });
     </script>
     @endsection

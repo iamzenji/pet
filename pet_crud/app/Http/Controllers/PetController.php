@@ -10,8 +10,9 @@ class PetController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pet::query();
 
+        // ?  $query and  $pets declare but not use
+        $query = Pet::query();
         $pets = $query->get();
         // fetch data
         return view('pets.index');
@@ -39,13 +40,13 @@ class PetController extends Controller
         return DataTables::make($query->get())->toJson();
     }
 
-
+    // ? create don't need to get when already have view page
     public function create()
     {
         return view('pets.create');
     }
 
-    // Input
+    // todo: alignment and add try catch
     public function store(Request $request)
     {
         $request->validate([
@@ -81,7 +82,7 @@ class PetController extends Controller
             'data' => $pet
         ]);
     }
-
+    // todo: alignment and add try catch
     public function update(Request $request, $id)
     {
         $pet = Pet::findOrFail($id);

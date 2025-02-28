@@ -10,7 +10,7 @@ return [
      * Control if all the laratrust tables should be truncated before running the seeder.
      */
     'truncate_tables' => true,
-
+    // todo use laratrust roles
     'roles_structure' => [
         'superadministrator' => [
             'users' => 'c,r,u,d',

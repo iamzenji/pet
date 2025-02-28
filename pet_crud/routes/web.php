@@ -22,13 +22,13 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return view('welcome');
 });
-
+// ? group by role type
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
     Route::get('/pet-list', [PetController::class, 'getPet'])->name('pets.getPet');
 
     // Create function
-    Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
+    Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create'); // ? create don't need to get when already have view page
     Route::post('/pets', [PetController::class, 'store'])->name('pets.store');
 
     // Edit and Update route

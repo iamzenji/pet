@@ -15,6 +15,7 @@
     <link type ="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></link>
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+        {{--todo: import or yield scc --}}
 </head>
 <body>
     <div id="app">
@@ -56,8 +57,8 @@
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                        onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
@@ -76,5 +77,6 @@
             @yield('content')
         </main>
     </div>
+        {{-- todo:import or yield scrypt --}}
 </body>
 </html>
