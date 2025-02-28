@@ -323,8 +323,6 @@
 
         });
 
-
-
     function setDeleteAction(petId) {
         let form = document.getElementById('deleteForm');
         form.action = "/pets/" + petId;
@@ -414,7 +412,6 @@
         } else {
             $("#editPetImage").attr("src", "/default-placeholder.jpg");
         }
-
         $("#editModal").modal("show");
     });
 

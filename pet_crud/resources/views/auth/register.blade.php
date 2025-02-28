@@ -39,15 +39,17 @@
                             </div>
                         </div>
 
-                        <!-- Role Selection Dropdown -->
+                        <!-- Role -->
                         <div class="row mb-3">
                             <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Account Type') }}</label>
                             <div class="col-md-6">
                                 <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
                                     @foreach(App\Models\Role::all() as $role)
-                                        <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>
-                                            {{ $role->name }}
-                                        </option>
+                                        @if($role->id != 1)
+                                            <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>
+                                                {{ $role->name }}
+                                            </option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('role')

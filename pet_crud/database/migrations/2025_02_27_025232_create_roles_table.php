@@ -17,7 +17,7 @@ return new class extends Migration {
         });
 
         DB::table('roles')->insert([
-            ['name' => 'Administrator', 'display_name' => 'Admin', 'description' => 'Has full access to manage users, settings, and permissions.'],
+            ['name' => 'Admin', 'display_name' => 'Admin', 'description' => 'Has full access to manage users, settings, and permissions.'],
             ['name' => 'User', 'display_name' => 'User', 'description' => 'A standard user with limited access to features.'],
             ['name' => 'Reader', 'display_name' => 'Reader', 'description' => 'Can only view content without making modifications.'],
         ]);
