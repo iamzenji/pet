@@ -5,16 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pet;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
+
 
 class PetController extends Controller
 {
     public function index(Request $request)
     {
-
-        // ?  $query and  $pets declare but not use
-        $query = Pet::query();
-        $pets = $query->get();
-        // fetch data
         return view('pets.index');
     }
 
@@ -23,90 +20,88 @@ class PetController extends Controller
     {
         $query = Pet::query();
 
-        // Filter data
-
-        if ($request->filled('type')) {
-            $query->where('type', 'like', '%' . $request->type . '%');
-        }
-
-        if ($request->filled('breed')) {
-            $query->where('breed', 'like', '%' . $request->breed . '%');
-        }
-
-        if ($request->filled('gender')) {
-            $query->where('gender', $request->gender);
-        }
         // return $pets = ;
         return DataTables::make($query->get())->toJson();
-    }
-
-    // ? create don't need to get when already have view page
-    public function create()
-    {
-        return view('pets.create');
     }
 
     // todo: alignment and add try catch
     public function store(Request $request)
     {
-        $request->validate([
-            'type' => 'required',
-            'breed' => 'required',
-            'gender' => 'required',
-            'color' => 'required',
-            'size' => 'required',
-            'age' => 'required|numeric',
-            'weight' => 'required|numeric',
-            'image' => 'nullable|image|max:2048',
-        ]);
+        try {
+            $request->validate([
+                'type'   => 'required',
+                'breed'  => 'required',
+                'gender' => 'required',
+                'color'  => 'required',
+                'size'   => 'required',
+                'age'    => 'required|numeric',
+                'weight' => 'required|numeric',
+                'image'  => 'nullable|image|max:2048',
+            ]);
+            $pet         = new Pet();
+            $pet->type   = $request->type;
+            $pet->breed  = $request->breed;
+            $pet->gender = $request->gender;
+            $pet->color  = $request->color;
+            $pet->size   = $request->size;
+            $pet->age    = $request->age;
+            $pet->weight = $request->weight;
 
-        $pet = new Pet();
-        $pet->type = $request->type;
-        $pet->breed = $request->breed;
-        $pet->gender = $request->gender;
-        $pet->color = $request->color;
-        $pet->size = $request->size;
-        $pet->age = $request->age;
-        $pet->weight = $request->weight;
+            if ($request->hasFile('image')) {
+                $imagePath  = $request->file('image')->store('pets', 'public');
+                $pet->image = $imagePath;
+            }
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('pets', 'public');
-            $pet->image = $imagePath;
+            $pet->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pet added successfully!',
+                'data'    => $pet
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while adding the pet.',
+                'error'   => $e->getMessage()
+            ], 500);
         }
-
-        $pet->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pet added successfully!',
-            'data' => $pet
-        ]);
     }
+
     // todo: alignment and add try catch
     public function update(Request $request, $id)
     {
-        $pet = Pet::findOrFail($id);
+        try {
+            $pet = Pet::findOrFail($id);
 
-        $validatedData = $request->validate([
-            'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
-            'gender' => 'required|string|max:10',
-            'color' => 'nullable|string|max:255',
-            'size' => 'nullable|string|max:255',
-            'age' => 'nullable|integer',
-            'weight' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
-        ]);
+            $validatedData = $request->validate([
+                'type'   => 'required|string|max:255',
+                'breed'  => 'required|string|max:255',
+                'gender' => 'required|string|max:10',
+                'color'  => 'nullable|string|max:255',
+                'size'   => 'nullable|string|max:255',
+                'age'    => 'nullable|integer',
+                'weight' => 'nullable|string|max:255',
+                'image'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('pets', 'public');
-            $validatedData['image'] = $imagePath;
+              // image upload
+            if ($request->hasFile('image')) {
+                $imagePath              = $request->file('image')->store('pets', 'public');
+                $validatedData['image'] = $imagePath;
+            }
+
+            $pet->update($validatedData);
+
+            return response()->json(['success' => true, 'message' => 'Pet updated successfully!']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the pet.',
+                'error'   => $e->getMessage()
+            ], 500);
         }
-
-        $pet->update($validatedData); // Update pet record
-
-        return response()->json(['success' => true, 'message' => 'Pet updated successfully!']);
     }
 
     // Delete
@@ -125,4 +120,20 @@ class PetController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to delete pet!'], 500);
         }
     }
+
+    // public function getTypes()
+    // {
+    //     $types = DB::table('types')->select('type')->distinct()->pluck('type');
+    //     return response()->json($types);
+    // }
+
+    // public function getBreeds($type)
+    // {
+    //     $breeds = DB::table('types')->where('type', $type)->select('breed')->distinct()->pluck('breed');
+    //     return response()->json($breeds);
+    // }
+
+
 }
+
+

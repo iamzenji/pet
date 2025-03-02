@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->timestamps();
         });
-        // ? laratrust already have roles  try to check condig/laratrust_seeder
+
         DB::table('roles')->insert([
             ['name' => 'Admin', 'display_name' => 'Admin', 'description' => 'Has full access to manage users, settings, and permissions.'],
             ['name' => 'User', 'display_name' => 'User', 'description' => 'A standard user with limited access to features.'],
