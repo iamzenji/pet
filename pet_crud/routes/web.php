@@ -7,7 +7,13 @@ use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TypeController;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AccountController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +42,6 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/types/fetch', [TypeController::class, 'fetchTypes'])->name('types.fetch');
     Route::get('/types/fetch-breeds', [TypeController::class, 'fetchBreeds'])->name('types.fetchBreeds');
 
-
     // EDIT AND UPDATE PET
     Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
 
@@ -50,10 +55,6 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // READER ROLE
     Route::get('/reader-dashboard', [ReaderController::class, 'index'])->name('reader.dashboard');
 
-    // Admin Dashboard Route
-    // Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-
-
     // MANAGE PET TYPE
     Route::get('/pets/manage', [TypeController::class, 'index'])->name('pets.manage');
     Route::get('/types/list', [TypeController::class, 'list']);
@@ -61,9 +62,14 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::delete('/types/{id}', [TypeController::class, 'destroy']);
     Route::put('/types/{id}', [TypeController::class, 'update']);
 
+    // ACCOUNT MANAGE
+    Route::get('/account', [UserController::class, 'account'])->name('account');
+    Route::get('/accounts/data', [UserController::class, 'getUsersData'])->name('accounts.data');
+    Route::post('/accounts/update/{id}', [UserController::class, 'updateUser'])->name('accounts.update');
+    Route::delete('/accounts/delete/{id}', [UserController::class, 'deleteUser'])->name('accounts.delete');
+    Route::get('/roles', [RoleController::class, 'getRoles']);
 
 });
-
 
 Auth::routes(['verify' => true]);
 Route::get('/home', [HomeController::class, 'index'])->name('home');

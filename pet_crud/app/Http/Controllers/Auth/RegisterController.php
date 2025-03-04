@@ -63,7 +63,7 @@ class RegisterController extends Controller
      * @return \App\Models\User
      */
     protected function create(array $data)
-    {
+{
     // Create the user first
     $user = User::create([
         'name' => $data['name'],
@@ -75,10 +75,11 @@ class RegisterController extends Controller
     $role = Role::find($data['role']);
 
     if ($role) {
-        // Attach the role to the user in the role_user table
-        $user->roles()->attach($role->id);
+        // Attach the role to the user using the pivot table
+        $user->roles()->attach($role->id, ['user_type' => User::class]); // Ensure user_type is set correctly
     }
 
     return $user;
-    }
+}
+
 }

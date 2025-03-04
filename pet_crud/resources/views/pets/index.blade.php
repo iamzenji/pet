@@ -325,7 +325,7 @@ $.ajax({
             typeSelect.append('<option value="">Select Type</option>');
 
             $.each(data, function(index, type) {
-                typeSelect.append('<option value="' + type.type + '">' + type.type + '</option>'); 
+                typeSelect.append('<option value="' + type.type + '">' + type.type + '</option>');
             });
         },
         error: function() {

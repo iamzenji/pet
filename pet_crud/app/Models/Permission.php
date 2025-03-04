@@ -2,9 +2,17 @@
 
 namespace App\Models;
 
-use Laratrust\Models\Permission as PermissionModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Permission extends PermissionModel
+class Permission extends Model
 {
-    public $guarded = [];
+    use HasFactory;
+
+    protected $fillable = ['name', 'display_name', 'description'];
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'permission_role')->withTimestamps();
+    }
 }
