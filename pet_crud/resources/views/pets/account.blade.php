@@ -17,6 +17,50 @@
     </table>
 </div>
 
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAccountModalLabel">Create Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createAccountForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Account Type</label>
+                        <select class="form-control" id="role" name="role" required>
+                            @foreach(App\Models\Role::all() as $role)
+                                @if($role->id != 1)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password_confirmation" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -67,6 +111,41 @@
         processing: true,
         serverSide: true,
         ajax: "{{ route('accounts.data') }}",
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                text: '<i class="bi bi-plus-lg"></i> Add',
+                className: 'btn btn-secondary',
+                action: function (e, dt, node, config) {
+                    $('#addAccountModal').modal('show');
+                }
+            },
+            {
+                extend: 'copy',
+                text: '<i class="bi bi-clipboard"></i> Copy',
+                className: 'btn btn-secondary'
+            },
+            {
+                extend: 'excel',
+                text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                className: 'btn btn-secondary'
+            },
+            {
+                extend: 'csv',
+                text: '<i class="bi bi-file-earmark-text"></i> CSV',
+                className: 'btn btn-secondary'
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+                className: 'btn btn-secondary'
+            },
+            {
+                extend: 'print',
+                text: '<i class="bi bi-printer"></i> Print',
+                className: 'btn btn-secondary'
+            }
+        ],
         columns: [
             { data: 'id', name: 'id' },
             { data: 'name', name: 'name' },
@@ -124,7 +203,7 @@
 
     // Handle Update Form Submission
     $('#editUserForm').submit(function(event) {
-        event.preventDefault();12   
+        event.preventDefault();12
 
         let userId = $('#edit-user-id').val();
         let userName = $('#edit-user-name').val();
@@ -193,6 +272,59 @@
             }
         });
     });
+    $('#createAccountForm').submit(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "{{ route('create.account') }}",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (response) {
+                Swal.fire({
+                    title: "Success!",
+                    text: response.success,
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                $('#addAccountModal').modal('hide');  // Close modal
+                $('#createAccountForm')[0].reset();  // Reset form
+
+                // Optionally, refresh the table/list of accounts without reloading
+                loadAccounts();
+            },
+            error: function (xhr) {
+                let errors = xhr.responseJSON.errors;
+                let errorMsg = "";
+                
+                if (errors) {
+                    $.each(errors, function (key, value) {
+                        errorMsg += value[0] + "\n";
+                    });
+                } else {
+                    errorMsg = "Something went wrong. Please try again.";
+                }
+
+                Swal.fire({
+                    title: "Error!",
+                    text: errorMsg,
+                    icon: "error",
+                });
+            }
+        });
+    });
+
+    function loadAccounts() {
+        $.ajax({
+            url: "{{ route('account') }}",
+            type: "GET",
+            success: function (data) {
+                $('#accountList').html(data);
+            }
+        });
+    }
+    
 });
 
 </script>

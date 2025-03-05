@@ -46,7 +46,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {{-- js --}}
-    <script src="{{ mix('js/app.js') }}"></script>
     @vite(['resources/js/app.js'])
 
     @stack('scripts')

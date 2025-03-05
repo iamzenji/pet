@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 
@@ -67,4 +68,37 @@ class UserController extends Controller
 
         return response()->json(['success' => 'User deleted successfully']);
     }
+
+    public function createAccount(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8|confirmed',
+        'role' => 'required|exists:roles,id'
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    $role = Role::find($request->role);
+    if ($role) {
+        $user->roles()->attach($role->id, ['user_type' => User::class]);
+    }
+
+    return response()->json([
+        'success' => 'User created successfully!',
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $role ? $role->name : 'N/A',
+        ]
+    ]);
+}
+
+
 }
