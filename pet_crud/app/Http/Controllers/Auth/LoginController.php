@@ -16,6 +16,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        dd($request);
         if ($user->hasRole('administrator')) {
             session(['admin_logged_in' => true]);
             return redirect()->route('account'); // Redirect to admin dashboard
@@ -25,9 +26,9 @@ class LoginController extends Controller
             return redirect()->route('pets.create'); // Redirect to user dashboard
         }
 
-        if ($user->hasRole('reader')) {
-            return redirect()->route('pets.index'); // Redirect to reader dashboard
-        }
+        // if ($user->hasRole('reader')) {
+        //     return redirect()->route('pets.index'); // Redirect to reader dashboard
+        // }
 
         return redirect()->route('home'); // Default fallback
     }
