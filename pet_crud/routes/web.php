@@ -30,8 +30,9 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth', 'verified']], function () {
 
 });
-// Administrator
-Route::group(['middleware' => ['auth', 'role:superadministrator|administrator']], function () {
+
+// Roles
+Route::group(['middleware' => ['auth', 'role:superadministrator|administrator|user|reader']], function () {
     Route::get('/account', [UserController::class, 'account'])->name('account');
     Route::get('/accounts/data', [UserController::class, 'getUsersData'])->name('accounts.data');
     Route::post('/accounts/update/{id}', [UserController::class, 'updateUser'])->name('accounts.update');
@@ -39,10 +40,7 @@ Route::group(['middleware' => ['auth', 'role:superadministrator|administrator']]
     Route::get('/roles', [RoleController::class, 'getRoles']);
     Route::post('/assign-role', [UserController::class, 'createRoles'])->name('assign.role');
     Route::post('/create-account', [UserController::class, 'createAccount'])->name('create.account');
-});
 
-// User
-Route::group(['middleware' => ['auth', 'role:superadministrator|administrator|user|reader']], function () {
     Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
     Route::post('/pets', [PetController::class, 'store'])->name('pets.store');
     Route::get('/types/fetch', [TypeController::class, 'fetchTypes'])->name('types.fetch');
@@ -63,3 +61,4 @@ Route::group(['middleware' => ['auth', 'role:superadministrator|administrator|us
 
 Auth::routes(['verify' => true]);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+ 
